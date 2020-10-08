@@ -5,7 +5,7 @@ const News = require('../models/news');
 /* GET home page. */
 router.get('/', (req, res) => {
     const search = req.query.search || '';
-    const sort = req.query.sort || -1;
+    let sort = req.query.sort || -1;
 
     if (sort !== -1 || sort !== 1) {
         sort = -1;
@@ -17,7 +17,8 @@ router.get('/', (req, res) => {
         })
         .sort({
             created: sort
-        });
+        })
+        .select('_id title description');
 
     findNews.exec((err, data) => {
         res.json(
@@ -31,7 +32,8 @@ router.get('/:id', (req, res) => {
     const id = req.params.id;
 
     const findNews = News
-        .findById(id);
+        .findById(id)
+        .select('_id title description');
 
     findNews.exec((err, data) => {
         res.json(
